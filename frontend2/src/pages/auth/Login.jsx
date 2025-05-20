@@ -35,7 +35,7 @@ function Login() {
 
     useEffect(() => {
         if (user?.role === 'admin') {
-            navigate('/admin');
+            navigate('/adminDashboard');
         } else if (user?.role === 'customer') {
             navigate('/');
         }

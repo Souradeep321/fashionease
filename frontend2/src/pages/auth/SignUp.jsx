@@ -2,44 +2,74 @@ import { useState, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail, ShoppingBag, ArrowRight, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import FButton from '../../components/Button';
-import { useDispatch } from 'react-redux';
-import { register } from '../../redux/authSlice';
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useGetProfileQuery, useRegisterMutation } from '../../redux/authApi';
+import { toast } from 'react-hot-toast';
 
 function Signup() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [formState, setFormState] = useState({
     username: '',
     email: '',
     password: '',
-    // confirmPassword: '',
-  })
+    confirmPassword: '',
+  });
 
-  console.log('formState', formState)
-
-  const handleChange = (e) => {
-    setFormState({ ...formState, [e.target.name]: e.target.value, });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(register(formState));
-    navigate("/")
-  }
-
-
+  const [register, { isLoading }] = useRegisterMutation();
+  const { data: user, refetch } = useGetProfileQuery();
+  const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const handleChange = (e) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
   };
 
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    const { username, email, password, confirmPassword } = formState;
+
+    // Basic validation
+    if (!username || !email || !password || !confirmPassword) {
+      toast.error('All fields are required');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    // Password match
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    try {
+      await register({ username, email, password }).unwrap();
+      await refetch();
+      toast.success('Registration successful!');
+    } catch (error) {
+      console.error('Registration failed:', error);
+      const errMsg = error.data?.error || 'Registration failed. Please try again.';
+      toast.error(errMsg);
+    }
   };
+
+  useEffect(() => {
+    if (!user) return;
+    if (user?.role === 'admin') {
+      navigate('/adminDashboard');
+    } else if (user?.role === 'customer') {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     AOS.init({
@@ -50,6 +80,8 @@ function Signup() {
     });
   }, []);
 
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
@@ -67,9 +99,7 @@ function Signup() {
           </p>
         </div>
 
-        <form className="space-y-5"
-          onSubmit={handleSubmit}
-        >
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -81,12 +111,13 @@ function Signup() {
                 type="text"
                 autoComplete="username"
                 required
-                value={formState.username || ""}
+                value={formState.username}
                 onChange={handleChange}
                 className="w-full py-2 pl-10 pr-3 border border-gray-300 rounded-md focus:ring-1 focus:ring-black focus:border-black text-gray-900"
-                placeholder="username"
+                placeholder="Username"
               />
             </div>
+
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <Mail className="h-5 w-5 text-gray-400" />
@@ -131,13 +162,41 @@ function Signup() {
                 )}
               </button>
             </div>
+
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Lock className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                required
+                value={formState.confirmPassword}
+                onChange={handleChange}
+                className="w-full py-2 pl-10 pr-10 border border-gray-300 rounded-md focus:ring-1 focus:ring-black focus:border-black text-gray-900"
+                placeholder="Confirm Password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                onClick={toggleConfirmPasswordVisibility}
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <Eye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className='flex justify-center'>
-            <FButton type="submit">
+            <FButton type="submit" disabled={isLoading}>
               <span className="flex items-center justify-center">
-                Sign Up
-                <ArrowRight className="h-5 w-7 ml-2" />
+                {isLoading ? 'Signing up...' : 'Sign Up'}
+                {!isLoading && <ArrowRight className="h-5 w-7 ml-2" />}
               </span>
             </FButton>
           </div>

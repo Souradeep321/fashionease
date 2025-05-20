@@ -1,15 +1,29 @@
-import React from 'react';
 import {
     BarChart2, ShoppingBag, Users, CreditCard, Activity,
     LogOut, PlusSquare, Edit
 } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
-import { logout } from '../../redux/authSlice';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useGetProfileQuery, useLogoutMutation } from '../../redux/authApi';
+import { useFetchCartItemsQuery } from '../../redux/cartApi';
 
 const AdminSidebar = () => {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [logout] = useLogoutMutation();
+    const { data: User, refetch } = useGetProfileQuery();
+    const { data: cart, isLoading: cartLoading, refetch: cartRefetch } = useFetchCartItemsQuery();
 
+
+    const handleLogout = async () => {
+        try {
+            await logout().unwrap();
+            await refetch(); // ensure user data is refreshed
+            await cartRefetch(); // ensure cart data is refreshed
+            navigate('/'); // redirect after logout
+            toast.success("Logout successful");
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
+    };
     return (
         <div className="hidden md:flex md:flex-shrink-0 h-[100%] ">
             <div className="flex flex-col w-64 bg-white border-r border-gray-200">
@@ -84,7 +98,7 @@ const AdminSidebar = () => {
                     <div className="mt-auto space-y-2">
                         <button
                             className="flex items-center px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
-                            onClick={() => dispatch(logout())}
+                            onClick={handleLogout}
                         >
                             <LogOut className="h-5 w-5 mr-3" />
                             Logout
