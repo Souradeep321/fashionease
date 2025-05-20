@@ -112,6 +112,7 @@ def login():
             "user": user.to_dict()
         })
         set_access_cookies(response, access_token)
+        print(access_token) 
         return response, 200
 
     except Exception as e:

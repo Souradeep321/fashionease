@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import FButton from '../../components/Button';
-import { useGetProfileQuery, useLoginMutation } from '../../../../frontend/src/redux/authApi';
 
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useGetProfileQuery, useLoginMutation } from '../../redux/authApi';
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);

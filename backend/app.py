@@ -9,15 +9,27 @@ import os
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import razorpay
 
 
 app = Flask(__name__)
 CORS(app,
     origins=["http://localhost:5173"],
     supports_credentials=True,
-    expose_headers=["Content-Type", "Authorization"]
+    expose_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization"]
 )
-load_dotenv() # Load environment variables
+
+load_dotenv()  # Load environment variables
+razorpay_client = razorpay.Client(
+    auth=(
+        os.getenv("RAZORPAY_KEY_ID"),      # Your Razorpay Key ID
+        os.getenv("RAZORPAY_KEY_SECRET")   # Your Razorpay Key Secret
+    )
+)
+
+print(os.getenv('RAZORPAY_KEY_ID'))
+print(os.getenv('RAZORPAY_KEY_SECRET'))
 
 print(os.getenv('JWT_SECRET_KEY'))
 
@@ -27,7 +39,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # JWT Cookie Config ✅
-app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_TOKEN_LOCATION'] = ['headers', 'cookies']
 app.config['JWT_COOKIE_SECURE'] = False  # Set to True in production (HTTPS)
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/'  # Cookie available site-wide
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False  # Enable for added security
@@ -52,10 +64,12 @@ jwt = JWTManager(app)
 from routes.auth_routes import auth_bp
 from routes.product_routes import product_bp
 from routes.cart_routes import cart_bp
+from routes.order_routes import order_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(cart_bp)
+app.register_blueprint(order_bp)
     
 
 # Create DB tables

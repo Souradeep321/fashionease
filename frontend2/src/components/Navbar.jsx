@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addSearchData } from '../redux/productSlice';
 import { FaBars, FaTimes, FaShoppingBag, FaUser } from 'react-icons/fa';
 import { IoIosArrowDown } from "react-icons/io";
-import { useGetProfileQuery, useLogoutMutation } from '../../../frontend/src/redux/authApi';
 import toast from 'react-hot-toast';
 import { useFetchCartItemsQuery } from '../redux/cartApi';
+import { useGetProfileQuery,useLogoutMutation } from '../redux/authApi';
 
 const Navbar = () => {
   const [logout] = useLogoutMutation();
   const { data: User, refetch } = useGetProfileQuery();
-   const { data: cart, isLoading: cartLoading ,refetch: cartRefetch } = useFetchCartItemsQuery();
+  const { data: cart, isLoading: cartLoading, refetch: cartRefetch } = useFetchCartItemsQuery();
   const cartItems = cart?.[1]?.cart || [];
 
   const [showMenu, setShowMenu] = useState(false);
@@ -37,18 +37,18 @@ const Navbar = () => {
   const isAuthenticated = !!User;
   console.log('isAuthenticated', isAuthenticated)
 
- 
+
   const handleLogout = async () => {
-  try {
-    await logout().unwrap();
-    await refetch(); // ensure user data is refreshed
-    await cartRefetch(); // ensure cart data is refreshed
-    navigate('/'); // redirect after logout
-    toast.success("Logout successful");
-  } catch (err) {
-    console.error("Logout failed", err);
-  }
-};
+    try {
+      await logout().unwrap();
+      await refetch(); // ensure user data is refreshed
+      await cartRefetch(); // ensure cart data is refreshed
+      navigate('/'); // redirect after logout
+      toast.success("Logout successful");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
 
   const linkClass = ({ isActive }) =>

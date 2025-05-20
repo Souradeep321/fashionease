@@ -55,9 +55,6 @@ const CartPage = () => {
 
 
 
-
-
-
   if (cartItemsArray.length === 0) {
     return (
       <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8 font-poppins flex flex-col items-center justify-center">
@@ -215,7 +212,9 @@ const CartPage = () => {
                 </div>
               </div>
 
-              <button className="w-full mt-6 bg-black hover:bg-gray-800 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md">
+              <button className="w-full mt-6 bg-black hover:bg-gray-800 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
+              onClick={() => navigate('/checkout')}
+              >
                 Proceed to Checkout
               </button>
 

@@ -21,6 +21,7 @@ import WomensAll from "../../pages/customer/women/WomensAll";
 import WomensJeans from "../../pages/customer/women/WomensJeans";
 import WomensTshirts from "../../pages/customer/women/WomensTshirts";
 import Navbar from "../Navbar";
+import CheckoutPage from "../../pages/customer/CheckoutPage";
 
 
 
@@ -48,5 +49,6 @@ export {
     WomensAll,
     WomensJeans,
     WomensTshirts,
-    Navbar
+    Navbar,
+    CheckoutPage
 }

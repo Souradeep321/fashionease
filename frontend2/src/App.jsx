@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
-import { useGetProfileQuery } from '../../frontend/src/redux/authApi';
+import { Route, Routes, useLocation } from "react-router-dom";
+import { useGetProfileQuery } from '../src/redux/authApi';
 import { Toaster } from "react-hot-toast"
 
 import {
@@ -26,8 +26,10 @@ import {
   WomensAll,
   WomensJeans,
   WomensTshirts,
-  Navbar
+  Navbar,
+  CheckoutPage
 } from './components/common/index'
+
 
 
 
@@ -78,6 +80,7 @@ function App() {
           <Route path='update/:id' element={<UpdateProduct />} />
         </Route>
         <Route path='cart' element={<CartPage />} />
+        <Route path='checkout' element={<CheckoutPage />} />
       </Routes>
       <Toaster />
 

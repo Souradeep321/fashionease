@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useGetProfileQuery } from "../../../frontend/src/redux/authApi";
-import { useAddToCartMutation } from "../redux/cartApi";
 import toast from "react-hot-toast";
+import { useGetProfileQuery } from "../redux/authApi";
+import { useAddToCartMutation } from "../redux/cartApi";
 
 const ProductCard = ({ image, title, price, description, id }) => {
   const navigate = useNavigate();

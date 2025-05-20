@@ -86,49 +86,53 @@ class CartItem(db.Model):
             'product': self.product.to_dict() if self.product else None
         }
 
-# class OrderStatus(enum.Enum):
-#     PENDING = "pending"
-#     COMPLETED = "completed"
-#     CANCELED = "canceled"
+class OrderStatus(enum.Enum):
+    PENDING = "pending"
+    PAID = "paid"
+    FAILED = "failed"
 
-# class Order(db.Model):
-#     __tablename__ = 'orders'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
-#     total_amount = db.Column(db.Float, nullable=False)
-#     status = db.Column(db.Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False)
-#     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+class Order(db.Model):
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    total_amount = db.Column(db.Float, nullable=False)
+    status = db.Column(db.Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False)
+    razorpay_order_id = db.Column(db.String(100))
+    razorpay_payment_id = db.Column(db.String(100))
+    razorpay_signature = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    # Address fields
+    shipping_name = db.Column(db.String(120), nullable=False)
+    shipping_address = db.Column(db.String(256), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    city = db.Column(db.String(120), nullable=False)
+    state = db.Column(db.String(120), nullable=False)
+    postal_code = db.Column(db.String(20), nullable=False)
+    country = db.Column(db.String(120), nullable=False)
 
-#     # Address fields
-#     shipping_name = db.Column(db.String(120), nullable=False)
-#     shipping_address = db.Column(db.String(256), nullable=False)
-#     city = db.Column(db.String(120), nullable=False)
-#     state = db.Column(db.String(120), nullable=False)
-#     postal_code = db.Column(db.String(20), nullable=False)
-#     country = db.Column(db.String(120), nullable=False)
+    user = db.relationship('User', backref='orders')
 
-#     user = db.relationship('User', backref='orders')
-#     items = db.relationship('OrderItem', backref='order', cascade='all, delete-orphan')
+    def __repr__(self):
+        return f'<Order {self.id} user_id={self.user_id} status={self.status}>'
 
-#     def __repr__(self):
-#         return f'<Order id={self.id} user_id={self.user_id} status={self.status.value}>'
-
-#     def to_dict(self):
-#         return {
-#             'id': self.id,
-#             'userId': self.user_id,
-#             'totalAmount': self.total_amount,
-#             'status': self.status.value,
-#             'createdAt': self.created_at.isoformat(),
-#             'shippingName': self.shipping_name,
-#             'shippingAddress': self.shipping_address,
-#             'city': self.city,
-#             'state': self.state,
-#             'postalCode': self.postal_code,
-#             'country': self.country,
-#             'items': [item.to_dict() for item in self.items]
-#         }
-
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'userId': self.user_id,
+            'totalAmount': self.total_amount,
+            'status': self.status.value,
+            'razorpayOrderId': self.razorpay_order_id,
+            'razorpayPaymentId': self.razorpay_payment_id,
+            'razorpaySignature': self.razorpay_signature,
+            'createdAt': self.created_at.isoformat(),
+            'shippingName': self.shipping_name,
+            'shippingAddress': self.shipping_address,
+            'phoneNumber': self.phone_number,
+            'city': self.city,
+            'state': self.state,
+            'postalCode': self.postal_code,
+            'country': self.country
+        }
 
 
 
