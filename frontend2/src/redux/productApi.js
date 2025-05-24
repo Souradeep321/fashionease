@@ -9,6 +9,10 @@ export const productApi = createApi({
                 query: () => "customerProducts",
                 providesTags: ["Product"],
             }),
+            getRandomProducts: builder.query({
+                query: () => "customerProducts/shuffle",
+                providesTags: ["Product"],
+            }),
             addProduct: builder.mutation({
                 query: (data) => ({
                     url: "products",
@@ -20,4 +24,4 @@ export const productApi = createApi({
         }),
     });
 
-export const { useGetProductsQuery, useAddProductMutation } = productApi
+export const { useGetProductsQuery, useAddProductMutation,useGetRandomProductsQuery } = productApi

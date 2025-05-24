@@ -20,11 +20,10 @@ import MensCasualTrousers from "../../pages/customer/men/MensCasualTrousers";
 import WomensAll from "../../pages/customer/women/WomensAll";
 import WomensJeans from "../../pages/customer/women/WomensJeans";
 import WomensTshirts from "../../pages/customer/women/WomensTshirts";
-import Navbar from "../Navbar";
 import CheckoutPage from "../../pages/customer/CheckoutPage";
-
-
-
+import Navbar from "../Navbar";
+import AboutPage from "../../pages/customer/AboutPage";
+import SuccessPage from "../../pages/customer/SuccessPage";
 
 export {
     Home,
@@ -49,6 +48,8 @@ export {
     WomensAll,
     WomensJeans,
     WomensTshirts,
+    CheckoutPage,
     Navbar,
-    CheckoutPage
+    AboutPage,
+    SuccessPage
 }

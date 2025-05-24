@@ -2,14 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/v1/' , credentials: 'include' }),
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: 'http://localhost:5000/api/v1/',
+        credentials: 'include' 
+    }),
     tagTypes: ['Auth'],
     endpoints: (builder) => ({
         getProfile: builder.query({
             query: () => ({
                 url: 'profile',
-                method: 'GET',
-                credentials:'include'
+                method: 'GET'
             }),
             providesTags: ['Auth']
         }),
@@ -17,7 +19,7 @@ export const authApi = createApi({
             query: (credentials) => ({
                 url: 'register',
                 method: 'POST',
-                body: credentials,
+                body: credentials
             }),
             invalidatesTags: ['Auth']
         }),
@@ -25,14 +27,12 @@ export const authApi = createApi({
             query: (credentials) => ({
                 url: 'login',
                 method: 'POST',
-                body: credentials,
-                credentials:'include'
+                body: credentials
             }),
             invalidatesTags: ['Auth'],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const result = await queryFulfilled;
-                    // Optional: Success feedback or log result
                     console.log("Login success", result);
                 } catch (err) {
                     console.error("Login failed:", err);
@@ -42,16 +42,16 @@ export const authApi = createApi({
         logout: builder.mutation({
             query: () => ({
                 url: 'logout',
-                method: 'POST',
-                credentials:'include'
-
+                method: 'POST'
             }),
             invalidatesTags: ['Auth'],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
-                    const result = await queryFulfilled;
-                    // Optional: Success feedback or log result
-                    console.log("Logout success", result);
+                    await queryFulfilled;
+                    // Manually reset the profile data to null
+                    dispatch(
+                        authApi.util.updateQueryData('getProfile', undefined, () => null)
+                    );
                 } catch (err) {
                     console.error("Logout failed:", err);
                 }
@@ -60,4 +60,9 @@ export const authApi = createApi({
     })
 })
 
-export const { useGetProfileQuery, useRegisterMutation, useLoginMutation, useLogoutMutation } = authApi
+export const { 
+    useGetProfileQuery, 
+    useRegisterMutation, 
+    useLoginMutation, 
+    useLogoutMutation 
+} = authApi;

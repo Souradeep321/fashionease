@@ -25,7 +25,7 @@ const MensCasualTrousers = () => {
     if (status === 'loading') return <Loader />;
 
     return (
-        <Container className='lg:py-[130px]'>
+        <Container className=' overflow-auto hide-scrollbar'>
             {productList
                 .filter((product) => product.gender === 'men')
                 .filter((product) => product.category === 'Casual-Trousers')

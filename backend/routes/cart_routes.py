@@ -105,3 +105,21 @@ def update_cart_item(item_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500  
+
+# remove all
+@cart_bp.route('/api/v1/clearCart', methods=['DELETE'])
+@jwt_required()
+def clear_cart():
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        CartItem.query.filter_by(user_id=user.id).delete()
+        db.session.commit()
+
+        return jsonify({"message": "Cart cleared successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500

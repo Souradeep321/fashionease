@@ -103,6 +103,14 @@ export const cartApi = createApi({
         }
       },
     }),
+    // 5️⃣ Clear the cart
+    clearCart: builder.mutation({
+      query: () => ({
+        url: 'clearCart',
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Cart'],
+    }),
   }),
 });
 
@@ -111,4 +119,5 @@ export const {
   useAddToCartMutation,
   useUpdateCartItemMutation,
   useDeleteFromCartMutation,
+  useClearCartMutation,
 } = cartApi;

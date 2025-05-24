@@ -19,9 +19,12 @@ const Shop = () => {
     // }, [dispatch, productList.length]);
 
     const {data:products,error,isError,isLoading,status} = useGetProductsQuery();
+    console.log('products', products);
+    
 
     console.log('status', status)
     const productList = products?.products || [];
+    
 
     if (error || status === 'failed') {
         return <p className='w-full text-2xl flex h-screen justify-center items-center'>Error: {error}</p>;
@@ -30,7 +33,7 @@ const Shop = () => {
     if (status === 'loading') return <Loader />;
 
     return (
-        <Container className="lg:py-[130px]">
+        <Container className="  overflow-auto hide-scrollbar">
             {productList.map((product) => (
                 <ProductCard key={product.id} {...product} />
             ))}

@@ -26,29 +26,32 @@ import {
   WomensAll,
   WomensJeans,
   WomensTshirts,
+  CheckoutPage,
   Navbar,
-  CheckoutPage
+  AboutPage,
+  SuccessPage,
 } from './components/common/index'
-
-
-
 
 function App() {
   const { data: userData, refetch, isLoading } = useGetProfileQuery();
+  const { refetch: cartRefetch } = useFetchCartItemsQuery();
   const location = useLocation(); // Get current location
 
   useEffect(() => {
     refetch(); // Optional, can be removed if automatic fetching is handled
-  }, [refetch]);
+    cartRefetch();
+  }, [refetch,cartRefetch]);
+
 
   const user = userData;
+
 
   if (isLoading) return <p className='w-full text-2xl flex h-screen justify-center items-center'>Loading...</p>;
 
   return (
     <>
-      {!location.pathname.startsWith("/adminDashboard") && <Navbar />}
-
+      {!location.pathname.startsWith("/adminDashboard") && !location.pathname.startsWith("/success") && <Navbar />}
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path='shop' element={<Shop />} />
@@ -79,8 +82,10 @@ function App() {
           <Route path='orders' element={<AdminOrder />} />
           <Route path='update/:id' element={<UpdateProduct />} />
         </Route>
+        <Route path='about' element={<AboutPage />} />
         <Route path='cart' element={<CartPage />} />
         <Route path='checkout' element={<CheckoutPage />} />
+        <Route path='success' element={<SuccessPage />} />
       </Routes>
       <Toaster />
 

@@ -26,7 +26,7 @@ const MensAll = () => {
 
     return (
         <>
-            <Container className='lg:py-[130px]'>
+            <Container className=' overflow-auto hide-scrollbar'>
                 {productList
                     .filter((product) => product.gender === 'men')
                     .map((product) => (

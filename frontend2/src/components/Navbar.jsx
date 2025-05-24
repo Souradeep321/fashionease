@@ -2,16 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addSearchData } from '../redux/productSlice';
-import { FaBars, FaTimes, FaShoppingBag, FaUser } from 'react-icons/fa';
+import { FaBars, FaTimes, FaShoppingBag, FaUser, FaSearch } from 'react-icons/fa';
 import { IoIosArrowDown } from "react-icons/io";
 import toast from 'react-hot-toast';
-import { useFetchCartItemsQuery } from '../redux/cartApi';
-import { useGetProfileQuery,useLogoutMutation } from '../redux/authApi';
+import { useClearCartMutation, useFetchCartItemsQuery } from '../redux/cartApi';
+import { useGetProfileQuery, useLogoutMutation } from '../redux/authApi';
 
 const Navbar = () => {
   const [logout] = useLogoutMutation();
   const { data: User, refetch } = useGetProfileQuery();
   const { data: cart, isLoading: cartLoading, refetch: cartRefetch } = useFetchCartItemsQuery();
+  const [clearcart] = useClearCartMutation()
   const cartItems = cart?.[1]?.cart || [];
 
   const [showMenu, setShowMenu] = useState(false);
@@ -43,6 +44,7 @@ const Navbar = () => {
       await logout().unwrap();
       await refetch(); // ensure user data is refreshed
       await cartRefetch(); // ensure cart data is refreshed
+      await clearcart();
       navigate('/'); // redirect after logout
       toast.success("Logout successful");
     } catch (err) {
@@ -61,6 +63,7 @@ const Navbar = () => {
     { label: "MEN'S", path: '/mens' },
     { label: "WOMEN'S", path: '/womens' },
     { label: 'CART', path: '/cart' },
+    { label: 'ABOUT US', path: '/about' },
   ];
 
   const menLinks = [
@@ -92,7 +95,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="w-full fixed z-50 bg-transparent text-black shadow-sm">
+    <header className="w-full fixed z-50 bg-white text-black shadow-sm">
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
         {/* Hamburger */}
         <button
@@ -103,7 +106,9 @@ const Navbar = () => {
         </button>
 
         {/* Logo */}
-        <div className="text-center flex-grow md:flex-grow-0 md:w-1/3">
+        <div
+          onClick={() => navigate('/')}
+          className="text-center flex-grow md:flex-grow-0 md:w-1/3 cursor-pointer">
           <h1 className="text-xl font-serif tracking-widest">Fashion Ease</h1>
           <p className="text-xs">The best place for fashion</p>
         </div>
@@ -116,7 +121,7 @@ const Navbar = () => {
             </button>
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50">
-                  <NavLink
+                <NavLink
                   to="/signup"
                   className="block px-4 py-2 hover:bg-rose-100"
                   onClick={() => setShowUserMenu(false)}
@@ -142,8 +147,9 @@ const Navbar = () => {
           <div className='flex items-center justify-center gap-4'>
             <button
               onClick={() => setShowSearch(true)}
-              className="text-lg  items-center gap-2 hidden md:flex"
+              className="text-lg  items-center gap-1 hidden md:flex"
             >
+              <FaSearch size={20} />
               SEARCH
             </button>
             <div className='flex items-center justify-center gap-2'>
@@ -151,7 +157,7 @@ const Navbar = () => {
               <button
                 onClick={() => navigate('/cart')}
                 className=" items-center gap-2 hidden md:flex">
-                CART ({cartItems.length})
+                {!isAuthenticated ? "CART (0)" : `CART (${cartItems.length})`}
               </button>
             </div>
           </div>

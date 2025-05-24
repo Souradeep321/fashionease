@@ -46,7 +46,7 @@ export const getShuffleProducts = createAsyncThunk(
   'products/getShuffleProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/products/shuffle`, {
+      const response = await fetch(`http://localhost:5000/api/v1/customerProducts/shuffle`, {
         method: 'GET',
         credentials: 'include'
       });

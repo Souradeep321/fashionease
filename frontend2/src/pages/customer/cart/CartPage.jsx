@@ -20,15 +20,18 @@ const CartPage = () => {
     refetch,
   } = useFetchCartItemsQuery();
 
+  const isAuthenticated = !!user;
+
   const [addToCart, { isLoading: adding }] = useAddToCartMutation();
   const [updateCartItem, { isLoading: updating }] = useUpdateCartItemMutation();
   const [deleteFromCart, { isLoading: deleting }] = useDeleteFromCartMutation();
+  
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
-  if (user === null) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8 font-poppins flex flex-col items-center justify-center">
         <p className="text-3xl font-playfair font-bold text-gray-900 mb-2 flex items-center justify-center gap-4">
@@ -36,7 +39,7 @@ const CartPage = () => {
           Login to view your cart
         </p>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-12 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md mt-2"
+          className="bg-black hover:bg-gray-800 text-white py-2.5 px-12 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md mt-2"
           onClick={() => navigate('/login')}
         >
           Login
@@ -64,7 +67,7 @@ const CartPage = () => {
         </h1>
         <p className="text-gray-500 mb-4">Looks like you haven't added anything to your cart yet.</p>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
+          className="bg-black hover:bg-gray-800 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
           onClick={() => navigate('/shop')}
         >
           Start Shopping
@@ -80,7 +83,7 @@ const CartPage = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-2">YOUR SHOPPING BAG</h1>
             <button
-              className="hidden lg:block bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
+              className="hidden lg:block bg-black hover:bg-gray-800 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
               onClick={() => navigate('/shop')}
             >
               Continue Shopping
@@ -213,7 +216,7 @@ const CartPage = () => {
               </div>
 
               <button className="w-full mt-6 bg-black hover:bg-gray-800 text-white py-3.5 px-6 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md"
-              onClick={() => navigate('/checkout')}
+                onClick={() => navigate('/checkout')}
               >
                 Proceed to Checkout
               </button>

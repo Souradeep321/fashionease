@@ -14,27 +14,6 @@ from sqlalchemy.exc import SQLAlchemyError
 # Create a product (only for logged-in users)
 product_bp = Blueprint('product', __name__)
 
-# Get all products for customer in shuffle order
-@product_bp.route('/api/v1/products/shuffle', methods=['GET'])
-def get_all_products_shuffle():
-    try:
-        products = Product.query.all()
-        
-        if not products:
-            return jsonify({"message": "No products found"}), 404
-        
-        # Shuffle the products
-        import random
-        random.shuffle(products)
-        
-        result = [product.to_dict() for product in products]
-        return jsonify({
-            "message": f"Found {len(result)} products",
-            "products": result
-        }), 200
-    except Exception as e:
-        return jsonify({"error": f"Error fetching products: {str(e)}"}), 500
-
 
 # Get all products for admin
 @product_bp.route('/api/v1/products', methods=['GET'])
@@ -71,7 +50,26 @@ def get_all_products_customer():
     except Exception as e:
         return jsonify({"error": f"Error fetching products: {str(e)}"}), 500
 
-
+# Get random 6 products for customer
+@product_bp.route('/api/v1/customerProducts/shuffle', methods=['GET'])  
+def get_all_products_customer_shuffle():
+    try:
+        products = Product.query.all()
+        
+        if not products:
+            return jsonify({"message": "No products found"}), 404
+        
+        # Shuffle the products
+        import random
+        random.shuffle(products)
+        
+        result = [product.to_dict() for product in products]
+        return jsonify({
+            "message": f"Found {len(result)} products",
+            "products": result
+        }), 200
+    except Exception as e:
+        return jsonify({"error": f"Error fetching products: {str(e)}"}), 500
 
 
 @product_bp.route('/api/v1/products/<int:product_id>', methods=['GET'])
