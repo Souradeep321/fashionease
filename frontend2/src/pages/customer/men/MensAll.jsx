@@ -1,21 +1,19 @@
-import React, { useEffect } from 'react';
 import Container from '../../../components/common/Container';
-import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../../components/common/Loader';
-import { getProductsForCustomer } from '../../../redux/productSlice';
 import ProductCard from '../../../components/ProductCard';
+import CustomSwiper from '../../../components/common/Swiper';
+import { useGetProductsQuery } from '../../../redux/productApi';
+
+import ment1 from '../../../assets/mens/ment1.png';
+import ment2 from '../../../assets/mens/ment2.png';
+import ment3 from '../../../assets/mens/ment3.png';
+
 
 const MensAll = () => {
-    const { products, status, error } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
+    const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+    console.log('products', products);
 
     const productList = products?.products || [];
-
-    useEffect(() => {
-        if (productList.length === 0) {
-            dispatch(getProductsForCustomer());
-        }
-    }, [dispatch, productList.length]);
 
 
     if (error || status === 'failed') {
@@ -27,6 +25,27 @@ const MensAll = () => {
     return (
         <>
             <Container className=' overflow-auto hide-scrollbar'>
+                <CustomSwiper
+                    className="h-[60%] lg:h-[75%] md:mt-[117px] mt-[70px] overflow-auto hide-scrollbar"
+                    slides={[
+                        {
+                            image: ment1,
+                            title: 'Refined Masculinity',
+                            description: 'Step out in confidence with modern men’s wear.',
+                        },
+                        {
+                            image: ment2,
+                            title: 'Smart. Sharp. Stylish.',
+                            description: 'Experience comfort without compromising on class.',
+                        },
+                        {
+                            image: ment3,
+                            title: 'Elevate Your Everyday',
+                            description: 'From casual to classic — own every look.',
+                        },
+                    ]}
+                />
+
                 {productList
                     .filter((product) => product.gender === 'men')
                     .map((product) => (

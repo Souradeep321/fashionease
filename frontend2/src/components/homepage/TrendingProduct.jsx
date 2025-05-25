@@ -3,33 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { useGetProductsQuery, useGetRandomProductsQuery } from "../../redux/productApi";
 import { useAddToCartMutation } from "../../redux/cartApi";
 import { useGetProfileQuery } from "../../redux/authApi";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 
 const TrendingProducts = () => {
+  const navigate = useNavigate();
   const { data: products, error, isError, isLoading } = useGetRandomProductsQuery();
   const productList = products?.products?.slice(0, 5) || [];
 
-  const { data: userData, refetch } = useGetProfileQuery();
+  const { data: userData, refetch, isLoading: profileLoading } = useGetProfileQuery();
   const [addToCart, { isLoading: adding }] = useAddToCartMutation();
-  const navigate = useNavigate();
+  const isAuthenticated = !!userData;
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
-  const handleAddToCart = async (productId) => {
-    if (!userData) {
-      navigate("/login");
-      return;
-    }
-    try {
-      const res = await addToCart(productId).unwrap();
-      toast.success(res.message || "Added to cart!");
-    } catch (err) {
-      toast.error(err.data?.error || err.error || "Failed to add to cart");
-    }
-  };
 
   const themeColors = {
     primary: "bg-blue-600 hover:bg-blue-700",
@@ -73,6 +62,8 @@ const TrendingProducts = () => {
                   src={product.image}
                   alt={product.name}
                   className="object-cover w-full h-full transition-transform duration-500 cursor-pointer group-hover:scale-105"
+                  onClick={() => navigate(`/product/${product.id}`)}
+                  loading="lazy"
                 />
               ) : (
                 <div className="flex items-center justify-center w-full h-full text-gray-400">
@@ -83,7 +74,18 @@ const TrendingProducts = () => {
                 {product.category}
               </div>
               <button
-                onClick={() => handleAddToCart(product.id)}
+                onClick={async () => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                    return;
+                  }
+                  try {
+                    const res = await addToCart(product?.id).unwrap();
+                    toast.success(res.message || "Added to cart!");
+                  } catch (error) {
+                    toast.error(error.data?.error || error.error || "Failed to add to cart");
+                  }
+                }}
                 className="absolute p-2 text-black transition-all duration-300 rounded-full shadow-sm opacity-0 bottom-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white group-hover:opacity-100"
                 aria-label={`Add ${product.name} to cart`}
                 disabled={adding}
@@ -114,7 +116,18 @@ const TrendingProducts = () => {
               <div className="flex items-center justify-between mt-2">
                 <p className="font-semibold text-gray-900">${product.price}</p>
                 <button
-                  onClick={() => handleAddToCart(product.id)}
+                  onClick={async () => {
+                    if (!isAuthenticated) {
+                      navigate("/login");
+                      return;
+                    }
+                    try {
+                      const res = await addToCart(product?.id).unwrap();
+                      toast.success(res.message || "Added to cart!");
+                    } catch (error) {
+                      toast.error(error.data?.error || error.error || "Failed to add to cart");
+                    }
+                  }}
                   className="flex items-center justify-center gap-1 px-4 py-2 text-xs font-medium text-white transition-all duration-300 rounded-full shadow-md group lg:hidden bg-gradient-to-r from-gray-800 to-black hover:from-gray-700 hover:to-gray-900 hover:shadow-lg active:scale-95"
                   disabled={adding}
                 >

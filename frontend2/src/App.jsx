@@ -10,8 +10,6 @@ import {
   AdminDashboard,
   AdminHome,
   AdminProducts,
-  AdminCustomer,
-  AdminOrder,
   UpdateProduct,
   CreateProduct,
   Shop,
@@ -30,28 +28,50 @@ import {
   Navbar,
   AboutPage,
   SuccessPage,
+  ShowProduct,
+  Loader
 } from './components/common/index'
+import { useFetchCartItemsQuery } from './redux/cartApi';
 
 function App() {
   const { data: userData, refetch, isLoading } = useGetProfileQuery();
   const { refetch: cartRefetch } = useFetchCartItemsQuery();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
 
   useEffect(() => {
-    refetch(); // Optional, can be removed if automatic fetching is handled
-    cartRefetch();
-  }, [refetch,cartRefetch]);
+    let isMounted = true;
+
+    const fetchData = async () => {
+      if (userData && isMounted) {
+        try {
+          await Promise.all([
+            refetch(),
+            cartRefetch()
+          ]);
+        } catch (err) {
+          console.error('Data fetch error:', err);
+        }
+      }
+    };
+
+    fetchData();
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
+  }, [userData, refetch, cartRefetch]); // Add all dependencies
 
 
   const user = userData;
 
 
-  if (isLoading) return <p className='w-full text-2xl flex h-screen justify-center items-center'>Loading...</p>;
+   if (isLoading) return <p className='w-full text-2xl flex h-screen justify-center items-center'>Loading...</p>;
 
   return (
     <>
       {!location.pathname.startsWith("/adminDashboard") && !location.pathname.startsWith("/success") && <Navbar />}
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path='shop' element={<Shop />} />
@@ -78,11 +98,10 @@ function App() {
           <Route index element={<AdminHome />} />
           <Route path='products' element={<AdminProducts />} />
           <Route path='createProduct' element={<CreateProduct />} />
-          <Route path='customers' element={<AdminCustomer />} />
-          <Route path='orders' element={<AdminOrder />} />
           <Route path='update/:id' element={<UpdateProduct />} />
         </Route>
         <Route path='about' element={<AboutPage />} />
+        <Route path='product/:id' element={<ShowProduct />} />
         <Route path='cart' element={<CartPage />} />
         <Route path='checkout' element={<CheckoutPage />} />
         <Route path='success' element={<SuccessPage />} />

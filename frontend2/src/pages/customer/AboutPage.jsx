@@ -1,4 +1,5 @@
 import { FaTruck, FaShieldAlt, FaSmile } from 'react-icons/fa';
+import ment1 from "../../assets/mens/ment1.png"
 
 const AboutPage = () => {
 
@@ -21,7 +22,7 @@ const AboutPage = () => {
     ]
 
   return (
-    <div className="min-h-screen pt-20 bg-gray-50 mt-[2%]">
+    <div className="min-h-screen pt-20 bg-gray-50 mt-[2%] overflow-auto hide-scrollbar">
       {/* Hero Section */}
       <section className="py-20 text-white bg-gray-900">
         <div className="max-w-6xl px-4 mx-auto text-center sm:px-6 lg:px-8">
@@ -51,7 +52,7 @@ const AboutPage = () => {
             </div>
             <div className="md:w-1/2">
               <img 
-                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                src={ment1} 
                 alt="Our Team" 
                 className="rounded-lg shadow-xl"
               />

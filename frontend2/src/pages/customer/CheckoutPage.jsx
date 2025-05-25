@@ -23,7 +23,7 @@ const CheckoutPage = () => {
   const { data: userData, refetch } = useGetProfileQuery();
   const { data: cartData, refetch: cartRefetch } = useFetchCartItemsQuery();
 
-  const subtotal = cartData?.[2]?.total || 0;
+  const subtotal = cartData?.total || 0;
   const tax = Math.round(subtotal * 0.14);
   const total = subtotal + tax;
 
@@ -281,7 +281,7 @@ const CheckoutPage = () => {
 
             <button
               type="submit"
-            //   disabled={isProcessing}
+              //   disabled={isProcessing}
               className="w-full px-4 py-2 text-lg font-semibold text-white bg-black rounded-md hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
             >
               {isProcessing ? "Processing..." : "Place Order"}

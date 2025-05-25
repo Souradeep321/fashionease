@@ -1,21 +1,19 @@
-import React, { useEffect } from 'react';
 import Container from '../../../components/common/Container';
-import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../../components/common/Loader';
-import { getProductsForCustomer } from '../../../redux/productSlice';
+import CustomSwiper from '../../../components/common/Swiper';
 import ProductCard from '../../../components/ProductCard';
+import { useGetProductsQuery } from '../../../redux/productApi';
+
+import tshirt1 from '../../../assets/womenstshirts/tshirt1.png';
+import tshirt2 from '../../../assets/womenstshirts/tshirt2.png';
+import tshirt3 from '../../../assets/womenstshirts/tshirt3.png';
+
 
 const WomensTshirts = () => {
-    const { products, status, error } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
+    const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+    console.log('products', products);
 
     const productList = products?.products || [];
-
-    useEffect(() => {
-        if (productList.length === 0) {
-            dispatch(getProductsForCustomer());
-        }
-    }, [dispatch, productList.length]);
 
 
     if (error || status === 'failed') {
@@ -26,6 +24,26 @@ const WomensTshirts = () => {
 
     return (
         <Container className=' overflow-auto hide-scrollbar'>
+            <CustomSwiper
+                className="h-[60%] lg:h-[75%] md:mt-[117px] mt-[70px] overflow-auto hide-scrollbar"
+                slides={[
+                    {
+                        image: tshirt1,
+                        title: 'Chic & Casual',
+                        description: 'T-shirts that blend comfort with modern flair.',
+                    },
+                    {
+                        image: tshirt2,
+                        title: 'Effortless Style',
+                        description: 'Go from laid-back to standout with ease.',
+                    },
+                    {
+                        image: tshirt3,
+                        title: 'Bold Basics',
+                        description: 'Elevate your everyday with trendy essentials.',
+                    },
+                ]}
+            />
             {productList
                 .filter((product) => product.gender === 'women')
                 .filter((product) => product.category === 'T-shirts')

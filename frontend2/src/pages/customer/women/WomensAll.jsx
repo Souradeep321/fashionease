@@ -1,49 +1,22 @@
-import React, { useEffect } from 'react';
 import Container from '../../../components/common/Container';
-import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../../components/common/Loader';
-import { getProductsForCustomer } from '../../../redux/productSlice';
 import ProductCard from '../../../components/ProductCard';
 import CustomSwiper from '../../../components/common/Swiper';
-import img1 from '../../../components/Slider/a1.png';
-import img2 from '../../../components/Slider/a2.png';
-import img3 from '../../../components/Slider/a3.png';
+import { useGetProductsQuery } from '../../../redux/productApi';
 
-import women1 from '../../../assets/women1.png';
-import women2 from '../../../assets/women2.png';
-import women3 from '../../../assets/women3.png';
-import Slider from '../../../components/homepage/Slider';
+
+
+import tshirt1 from '../../../assets/womenstshirts/tshirt1.png';
+import jeansImg1 from '../../../assets/womensjeans/jeansImg1.png';
+import tshirt3 from '../../../assets/womenstshirts/tshirt3.png';
+
 
 const WomensAll = () => {
-    const { products, status, error } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
-
-    const productList = products?.products || [];
+    const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+        console.log('products', products);
     
-    const slidesData = [
-      {
-        image: img1,
-        title: "Spring Break: How to Fashion Your Holiday",
-        subtitle: "Your boarding pass to good fashion.",
-      },
-      {
-        image: img2,
-        title: "Summer Escapes: Stylish Getaways",
-        subtitle: "Travel in trend this season.",
-      },
-      {
-        image: img3,
-        title: "City Vibes: Urban Fashion Tips",
-        subtitle: "Turn heads in the streets.",
-      },
-    ];
-
-    useEffect(() => {
-        if (productList.length === 0) {
-            dispatch(getProductsForCustomer());
-        }
-    }, [dispatch, productList.length]);
-
+        console.log('status', status)
+        const productList = products?.products || [];
 
     if (error || status === 'failed') {
         return <p className='w-full text-2xl flex h-screen justify-center items-center'>Error: {error}</p>;
@@ -55,27 +28,26 @@ const WomensAll = () => {
         <Container className='overflow-auto hide-scrollbar'>
 
             <CustomSwiper
-                className="h-[60%] lg:h-[90%] overflow-auto hide-scrollbar"
+                className="h-[60%] lg:h-[75%]  md:mt-[117px] mt-[70px] overflow-auto hide-scrollbar"
                 slides={[
                     {
-                        image: women1,
+                        image: jeansImg1,
                         title: 'Stylish Elegance',
                         description: 'Discover the latest in women’s fashion.',
                     },
                     {
-                        image: women2,
+                        image: tshirt3,
                         title: 'Comfort Meets Class',
                         description: 'Explore outfits that define you.',
                     },
                     {
-                        image: women3,
+                        image: tshirt1,
                         title: 'Bold and Beautiful',
                         description: 'Style that speaks for itself.',
                     },
                 ]}
             />
 
-            <Slider slides={slidesData} />
             {productList
                 .filter((product) => product.gender === 'women')
                 .map((product) => (

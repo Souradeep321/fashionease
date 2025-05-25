@@ -59,28 +59,7 @@ const AdminSidebar = () => {
                             <PlusSquare className="h-5 w-5 mr-3" />
                             Create Product
                         </NavLink>
-                        <NavLink to="/adminDashboard/customers"
-                            className={({ isActive }) =>
-                                `flex items-center  px-4 py-3 text-sm font-medium ${isActive
-                                    ? "bg-purple-100 rounded-lg text-purple-700 font-semibold"
-                                    : "text-zinc-600 hover:bg-zinc-100"
-                                }`
-                            }
-                        >
-                            <Users className="h-5 w-5 mr-3" />
-                            Customers
-                        </NavLink>
-                        <NavLink to="/adminDashboard/orders"
-                            className={({ isActive }) =>
-                                `flex items-center  px-4 py-3 text-sm font-medium ${isActive
-                                    ? "bg-purple-100 rounded-lg text-purple-700 font-semibold"
-                                    : "text-zinc-600 hover:bg-zinc-100"
-                                }`
-                            }
-                        >
-                            <CreditCard className="h-5 w-5 mr-3" />
-                            Orders
-                        </NavLink>
+                        
                         {/* <NavLink to="#"
                             className={({ isActive }) =>
                                 `flex items-center  px-4 py-3 text-sm font-medium ${isActive

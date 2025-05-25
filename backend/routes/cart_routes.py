@@ -52,7 +52,13 @@ def get_cart():
         cart_items = CartItem.query.filter_by(user_id=user.id).all()
         cart_data = [item.to_dict() for item in cart_items]
 
-        return jsonify({"cartItems": len(cart_items)},{"cart": cart_data},{"total": sum(item.product.price * item.quantity for item in cart_items)}), 200
+        total_price = sum(item.product.price * item.quantity for item in cart_items)
+        return jsonify({
+            "cartItems": len(cart_items),
+            "cart": cart_data,
+            "total": float(total_price)
+        }), 200
+
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

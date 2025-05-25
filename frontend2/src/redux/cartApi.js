@@ -62,7 +62,7 @@ export const cartApi = createApi({
       async onQueryStarted(itemId, { dispatch, queryFulfilled }) {
         const patch = dispatch(
           cartApi.util.updateQueryData('fetchCartItems', undefined, (draft) => {
-            const item = draft.cart.find((it) => it.id === itemId);
+            const item = draft.cart.find((it) => it.id === Number(itemId));
             if (!item) return;
             item.quantity -= 1;
             if (item.quantity <= 0) {

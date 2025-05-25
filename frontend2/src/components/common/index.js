@@ -3,8 +3,6 @@ import SignUp from "../../pages/auth/SignUp";
 import Login from "../../pages/auth/Login";
 import AdminDashboard from "../../pages/admin/AdminDashboard";
 import AdminProducts from "../../pages/admin/AdminProducts";
-import AdminCustomer from "../../pages/admin/AdminCustomer";
-import AdminOrder from "../../pages/admin/AdminOrder";
 import AdminHome from "../../pages/admin/AdminHome";
 import UpdateProduct from "../../pages/admin/UpdateProduct";
 import CreateProduct from "../../pages/admin/CreateProduct";
@@ -24,6 +22,8 @@ import CheckoutPage from "../../pages/customer/CheckoutPage";
 import Navbar from "../Navbar";
 import AboutPage from "../../pages/customer/AboutPage";
 import SuccessPage from "../../pages/customer/SuccessPage";
+import ShowProduct from "../ShowProduct";
+import Loader from "./Loader";
 
 export {
     Home,
@@ -32,8 +32,6 @@ export {
     AdminDashboard,
     AdminHome,
     AdminProducts,
-    AdminCustomer,
-    AdminOrder,
     UpdateProduct,
     CreateProduct,
     Shop,
@@ -51,5 +49,7 @@ export {
     CheckoutPage,
     Navbar,
     AboutPage,
-    SuccessPage
+    SuccessPage,
+    ShowProduct,
+    Loader
 }

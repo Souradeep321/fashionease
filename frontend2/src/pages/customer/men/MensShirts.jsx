@@ -1,21 +1,19 @@
-import React, { useEffect } from 'react';
 import Container from '../../../components/common/Container';
-import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../../components/common/Loader';
-import { getProductsForCustomer } from '../../../redux/productSlice';
+import CustomSwiper from '../../../components/common/Swiper';
 import ProductCard from '../../../components/ProductCard';
+import { useGetProductsQuery } from '../../../redux/productApi';
+
+
+import ment1 from '../../../assets/mens/ment1.png';
+import ment2 from '../../../assets/mens/ment2.png';
+import ment3 from '../../../assets/mens/ment3.png';
 
 const MensShirts = () => {
-    const { products, status, error } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
+    const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+    console.log('products', products);
 
     const productList = products?.products || [];
-
-    useEffect(() => {
-        if (productList.length === 0) {
-            dispatch(getProductsForCustomer());
-        }
-    }, [dispatch, productList.length]);
 
 
     if (error || status === 'failed') {
@@ -26,6 +24,27 @@ const MensShirts = () => {
 
     return (
         <Container className=' overflow-auto hide-scrollbar'>
+            <CustomSwiper
+                className="h-[60%] lg:h-[75%] md:mt-[117px] mt-[70px] overflow-auto hide-scrollbar"
+                slides={[
+                    {
+                        image: ment1,
+                        title: 'Classic Cuts',
+                        description: 'Discover timeless shirts tailored for every man.',
+                    },
+                    {
+                        image: ment2,
+                        title: 'Everyday Comfort',
+                        description: 'Breathe easy in styles made for daily wear.',
+                    },
+                    {
+                        image: ment3,
+                        title: 'Bold Statements',
+                        description: 'Stand out with patterns and fits that impress.',
+                    },
+                ]}
+            />
+
             {productList
                 .filter((product) => product.gender === 'men')
                 .filter((product) => product.category === 'Shirts')

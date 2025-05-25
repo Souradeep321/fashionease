@@ -1,44 +1,54 @@
-import React, { useEffect } from 'react'
 import ProductCard from '../../components/ProductCard'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProductsForCustomer } from '../../redux/productSlice';
 import Container from '../../components/common/Container';
 import Loader from '../../components/common/Loader';
+import CustomSwiper from '../../components/common/Swiper';
 import { useGetProductsQuery } from '../../redux/productApi';
 
+import homeImg1 from '../../assets/home/homeImg1.png';
+import homeImg2 from '../../assets/home/homeImg2.png';
+import homeImg3 from '../../assets/home/homeImg3.png';
+
 const Shop = () => {
-    // const { products, status, error } = useSelector((state) => state.products);
-    // const dispatch = useDispatch();
+  const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+  console.log('products', products);
 
-    // const productList = products?.products || [];
+  const productList = products?.products || [];
 
-    // useEffect(() => {
-    //     if (productList.length === 0) {
-    //         dispatch(getProductsForCustomer());
-    //     }
-    // }, [dispatch, productList.length]);
+  if (error || status === 'failed') {
+    return <p className='w-full text-2xl flex h-screen justify-center items-center'>Error: {error}</p>;
+  }
 
-    const {data:products,error,isError,isLoading,status} = useGetProductsQuery();
-    console.log('products', products);
-    
+  if (status === 'loading') return <Loader />;
 
-    console.log('status', status)
-    const productList = products?.products || [];
-    
+  return (
+    <Container className="  overflow-auto hide-scrollbar">
+      <CustomSwiper
+        className="h-[60%] lg:h-[75%] md:mt-[117px] mt-[70px]"
+        slides={[
+          {
+            image: homeImg2,
+            title: 'Modern Grace',
+            description: 'Step into a world of effortless sophistication.',
+          },
+          {
+            image: homeImg1,
+            title: 'Chic & Comfortable',
+            description: 'Redefine comfort with timeless fashion staples.',
+          },
+          {
+            image: homeImg3,
+            title: 'Confidently You',
+            description: 'Make a statement with every outfit you wear.',
+          },
+        ]}
+      />
 
-    if (error || status === 'failed') {
-        return <p className='w-full text-2xl flex h-screen justify-center items-center'>Error: {error}</p>;
-    }
 
-    if (status === 'loading') return <Loader />;
-
-    return (
-        <Container className="  overflow-auto hide-scrollbar">
-            {productList.map((product) => (
-                <ProductCard key={product.id} {...product} />
-            ))}
-        </Container>
-    )
+      {productList.map((product) => (
+        <ProductCard key={product.id} {...product} />
+      ))}
+    </Container>
+  )
 }
 
 export default Shop;

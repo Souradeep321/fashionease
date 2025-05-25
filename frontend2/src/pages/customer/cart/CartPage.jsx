@@ -19,21 +19,29 @@ const CartPage = () => {
     isLoading: cartLoading,
     refetch,
   } = useFetchCartItemsQuery();
+  console.log('cartData', cartData)
 
   const isAuthenticated = !!user;
 
   const [addToCart, { isLoading: adding }] = useAddToCartMutation();
   const [updateCartItem, { isLoading: updating }] = useUpdateCartItemMutation();
   const [deleteFromCart, { isLoading: deleting }] = useDeleteFromCartMutation();
-  
+
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
+  // cartData is [ {cartItems}, {cart}, {total} ]
+  const cartItemsArray = cartData?.cart || [];
+  const subtotal = cartData?.total || 0;
+  const tax = Math.round(subtotal * 0.14);
+  const total = subtotal + tax;
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8 font-poppins flex flex-col items-center justify-center">
+      <div
+        className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8 font-poppins flex flex-col items-center justify-center">
         <p className="text-3xl font-playfair font-bold text-gray-900 mb-2 flex items-center justify-center gap-4">
           <ShoppingBag size={24} />
           Login to view your cart
@@ -49,13 +57,6 @@ const CartPage = () => {
   }
 
   if (cartLoading) return <Loader />;
-
-  // cartData is [ {cartItems}, {cart}, {total} ]
-  const cartItemsArray = cartData?.[1]?.cart || [];
-  const subtotal = cartData?.[2]?.total || 0;
-  const tax = Math.round(subtotal * 0.14);
-  const total = subtotal + tax;
-
 
 
   if (cartItemsArray.length === 0) {
@@ -117,6 +118,7 @@ const CartPage = () => {
                         src={item.product?.image || "/placeholder.jpg"}
                         alt={item.product?.title || "Product"}
                         className="w-full h-full object-cover"
+                        onClick={() => navigate(`/product/${item.product.id}`)}
                       />
                     </div>
                     <div>

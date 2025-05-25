@@ -2,7 +2,7 @@ import React from 'react';
 
 const Newsletter = () => {
   return (
-    <section className="py-16 bg-gray-50 overflow-auto hide-scrollbar ">
+    <section className="py-16 bg-gray-50 overflow-auto hide-scrollbar">
       <div className="container px-4 mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="mb-4 text-3xl font-light text-gray-900 md:text-4xl">

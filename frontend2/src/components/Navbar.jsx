@@ -5,15 +5,39 @@ import { addSearchData } from '../redux/productSlice';
 import { FaBars, FaTimes, FaShoppingBag, FaUser, FaSearch } from 'react-icons/fa';
 import { IoIosArrowDown } from "react-icons/io";
 import toast from 'react-hot-toast';
-import { useClearCartMutation, useFetchCartItemsQuery } from '../redux/cartApi';
-import { useGetProfileQuery, useLogoutMutation } from '../redux/authApi';
+import { cartApi, useClearCartMutation, useFetchCartItemsQuery } from '../redux/cartApi';
+import { authApi, useGetProfileQuery, useLogoutMutation } from '../redux/authApi';
 
 const Navbar = () => {
+  const menuItems = [
+    { label: 'HOME', path: '/' },
+    { label: 'SHOP', path: '/shop' },
+    { label: "MEN'S", path: '/mens' },
+    { label: "WOMEN'S", path: '/womens' },
+    { label: 'CART', path: '/cart' },
+    { label: 'ABOUT US', path: '/about' },
+  ];
+
+  const menLinks = [
+    { label: "Shirts", path: "/mens/shirts" },
+    { label: "T-Shirts", path: "/mens/t-shirts" },
+    { label: "Casual Trousers", path: "/mens/casual-trousers" },
+  ];
+
+  const womenLinks = [
+    { label: "Jeans", path: "/womens/jeans" },
+    { label: "T-Shirts", path: "/womens/t-shirts" },
+  ];
+
   const [logout] = useLogoutMutation();
   const { data: User, refetch } = useGetProfileQuery();
-  const { data: cart, isLoading: cartLoading, refetch: cartRefetch } = useFetchCartItemsQuery();
+  const { data: cartData, isLoading: cartLoading, refetch: cartRefetch } = useFetchCartItemsQuery();
   const [clearcart] = useClearCartMutation()
-  const cartItems = cart?.[1]?.cart || [];
+
+  const cartItemsArray = cartData?.cart || [];
+  const subtotal = cartData?.total || 0;
+  const tax = Math.round(subtotal * 0.14);
+  const total = subtotal + tax;
 
   const [showMenu, setShowMenu] = useState(false);
   const [search, setSearch] = useState('');
@@ -39,50 +63,45 @@ const Navbar = () => {
   console.log('isAuthenticated', isAuthenticated)
 
 
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout().unwrap();
+  //     console.log('User logged out successfully');
+  //     await refetch(); // ensure user data is refreshed
+  //     console.log('Cart cleared');
+  //     await cartRefetch(); // refetch cart items
+  //     console.log('Cart refetched');
+  //     toast.success("Logout successful");
+  //     navigate('/'); // redirect to home after logout
+  //   } catch (err) {
+  //     console.error("Logout failed", err);
+  //   }
+  // };
+
+
   const handleLogout = async () => {
     try {
-      await logout().unwrap();
-      await refetch(); // ensure user data is refreshed
-      await cartRefetch(); // ensure cart data is refreshed
-      await clearcart();
-      navigate('/'); // redirect after logout
+      await logout().unwrap(); // Important: calls the Flask logout route to clear cookie
+
+      dispatch(cartApi.util.resetApiState());
+      dispatch(authApi.util.resetApiState());
+
       toast.success("Logout successful");
-    } catch (err) {
-      console.error("Logout failed", err);
+      navigate('/'); // Redirect to home after logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed");
     }
   };
-
 
   const linkClass = ({ isActive }) =>
     `relative px-3 py-2 font-medium text-black transition-all duration-300 ${isActive ? 'underline underline-offset-8' : ''
     } hover:underline hover:underline-offset-8`;
 
-  const menuItems = [
-    { label: 'HOME', path: '/' },
-    { label: 'SHOP', path: '/shop' },
-    { label: "MEN'S", path: '/mens' },
-    { label: "WOMEN'S", path: '/womens' },
-    { label: 'CART', path: '/cart' },
-    { label: 'ABOUT US', path: '/about' },
-  ];
-
-  const menLinks = [
-    { label: "Shirts", path: "/mens/shirts" },
-    { label: "T-Shirts", path: "/mens/t-shirts" },
-    { label: "Casual Trousers", path: "/mens/casual-trousers" },
-  ];
-
-  const womenLinks = [
-    { label: "Jeans", path: "/womens/jeans" },
-    { label: "T-Shirts", path: "/womens/t-shirts" },
-  ];
-
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -94,8 +113,13 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+
   return (
-    <header className="w-full fixed z-50 bg-white text-black shadow-sm">
+    <header
+      className="w-full fixed z-50 bg-white text-black shadow-sm"
+    >
+
+
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
         {/* Hamburger */}
         <button
@@ -136,10 +160,14 @@ const Navbar = () => {
                   Log In
                 </NavLink>
                 {isAuthenticated && (
-                  <button onClick={handleLogout}
+                  <div
+                    onClick={() => {
+                      handleLogout();
+                      setShowUserMenu(false);
+                    }}
                     className="block px-4 py-2 hover:bg-rose-100">
                     Logout
-                  </button>
+                  </div>
                 )}
               </div>
             )}
@@ -152,14 +180,16 @@ const Navbar = () => {
               <FaSearch size={20} />
               SEARCH
             </button>
-            <div className='flex items-center justify-center gap-2'>
-              <FaShoppingBag size={20} onClick={() => navigate('/cart')} />
-              <button
-                onClick={() => navigate('/cart')}
-                className=" items-center gap-2 hidden md:flex">
-                {!isAuthenticated ? "CART (0)" : `CART (${cartItems.length})`}
-              </button>
+            <div className="relative cursor-pointer" onClick={() => navigate('/cart')}>
+              <FaShoppingBag size={20} />
+
+              {isAuthenticated && cartItemsArray.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartItemsArray.length}
+                </span>
+              )}
             </div>
+
           </div>
         </div>
 
@@ -206,111 +236,115 @@ const Navbar = () => {
 
 
       {/* Mobile Menu */}
-      {showMenu && (
-        <div className="md:hidden px-4 py-3 bg-white shadow-lg space-y-2">
-          {menuItems.map((item) => {
-            if (item.label === "MEN'S") {
-              return (
-                <div key="MEN'S">
-                  <button
-                    className="w-full text-left py-1 font-medium"
-                    onClick={() => setShowMenDropdown((prev) => !prev)}
-                  >
-                    MEN'S <IoIosArrowDown className='float-right' size={20} />
-                  </button>
-                  {showMenDropdown && (
-                    <div className="pl-4 space-y-1">
-                      {menLinks.map((link) => (
-                        <NavLink
-                          key={link.label}
-                          to={link.path}
-                          className="block py-1 text-sm text-gray-700"
-                          onClick={() => {
-                            setShowMenu(false);
-                            setShowMenDropdown(false);
-                          }}
-                        >
-                          {link.label}
-                        </NavLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            }
+      {
+        showMenu && (
+          <div className="md:hidden px-4 py-3 bg-white shadow-lg space-y-2">
+            {menuItems.map((item) => {
+              if (item.label === "MEN'S") {
+                return (
+                  <div key="MEN'S">
+                    <button
+                      className="w-full text-left py-1 font-medium"
+                      onClick={() => setShowMenDropdown((prev) => !prev)}
+                    >
+                      MEN'S <IoIosArrowDown className='float-right' size={20} />
+                    </button>
+                    {showMenDropdown && (
+                      <div className="pl-4 space-y-1">
+                        {menLinks.map((link) => (
+                          <NavLink
+                            key={link.label}
+                            to={link.path}
+                            className="block py-1 text-sm text-gray-700"
+                            onClick={() => {
+                              setShowMenu(false);
+                              setShowMenDropdown(false);
+                            }}
+                          >
+                            {link.label}
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
-            if (item.label === "WOMEN'S") {
-              return (
-                <div key="WOMEN'S">
-                  <button
-                    className="w-full text-left py-1 font-medium"
-                    onClick={() => setShowWomenDropdown((prev) => !prev)}
-                  >
-                    WOMEN'S<IoIosArrowDown className='float-right' size={20} />
-                  </button>
-                  {showWomenDropdown && (
-                    <div className="pl-4 space-y-1">
-                      {womenLinks.map((link) => (
-                        <NavLink
-                          key={link.label}
-                          to={link.path}
-                          className="block py-1 text-sm text-gray-700"
-                          onClick={() => {
-                            setShowMenu(false);
-                            setShowWomenDropdown(false);
-                          }}
-                        >
-                          {link.label}
-                        </NavLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            }
+              if (item.label === "WOMEN'S") {
+                return (
+                  <div key="WOMEN'S">
+                    <button
+                      className="w-full text-left py-1 font-medium"
+                      onClick={() => setShowWomenDropdown((prev) => !prev)}
+                    >
+                      WOMEN'S<IoIosArrowDown className='float-right' size={20} />
+                    </button>
+                    {showWomenDropdown && (
+                      <div className="pl-4 space-y-1">
+                        {womenLinks.map((link) => (
+                          <NavLink
+                            key={link.label}
+                            to={link.path}
+                            className="block py-1 text-sm text-gray-700"
+                            onClick={() => {
+                              setShowMenu(false);
+                              setShowWomenDropdown(false);
+                            }}
+                          >
+                            {link.label}
+                          </NavLink>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
-            return (
-              <NavLink
-                key={item.label}
-                to={item.path}
-                className="block py-1"
-                onClick={() => setShowMenu(false)}
-              >
-                {item.label}
-              </NavLink>
-            );
-          })}
-        </div>
-      )}
+              return (
+                <NavLink
+                  key={item.label}
+                  to={item.path}
+                  className="block py-1"
+                  onClick={() => setShowMenu(false)}
+                >
+                  {item.label}
+                </NavLink>
+              );
+            })}
+          </div>
+        )
+      }
 
 
       {/* Search Overlay */}
-      {showSearch && (
-        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 p-4">
-          <button onClick={() => setShowSearch(false)} className="absolute top-6 right-6 text-2xl">
-            <FaTimes />
-          </button>
-          <form
-            onSubmit={handleSearchSubmit}
-            className="flex items-center w-full max-w-4xl border border-gray-300"
-          >
-            <input
-              type="search"
-              placeholder="Search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-3 outline-none text-lg"
-            />
-            <button
-              type="submit"
-              className="bg-rose-300 text-white px-6 h-full text-sm tracking-wide"
-            >
-              SEARCH
+      {
+        showSearch && (
+          <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 p-4">
+            <button onClick={() => setShowSearch(false)} className="absolute top-6 right-6 text-2xl">
+              <FaTimes />
             </button>
-          </form>
-        </div>
-      )}
-    </header>
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center w-full max-w-4xl border border-gray-300"
+            >
+              <input
+                type="search"
+                placeholder="Search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-4 py-3 outline-none text-lg"
+              />
+              <button
+                type="submit"
+                className="bg-rose-300 text-white px-6 h-full text-sm tracking-wide"
+              >
+                SEARCH
+              </button>
+            </form>
+          </div>
+        )
+      }
+    </header >
   );
 };
 

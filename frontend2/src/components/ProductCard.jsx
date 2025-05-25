@@ -30,7 +30,9 @@ const ProductCard = ({ image, title, price, description, id }) => {
   };
 
   return (
-    <div className="group bg-white rounded shadow-md md:w-[230px] sm:w-48 w-[169px] overflow-hidden relative">
+    <div
+      onClick={() => navigate(`/product/${id}`)}
+      className="group bg-white rounded shadow-md md:w-[230px] sm:w-48 w-[169px] overflow-hidden relative">
       {/* Image Section */}
       <div className="bg-gray-200 md:h-[300px] sm:h-60 h-44 flex items-center justify-center relative overflow-hidden">
         {image ? (
@@ -48,7 +50,11 @@ const ProductCard = ({ image, title, price, description, id }) => {
           <div className="flex items-center bg-black">
             <button
               className="flex-1 text-white flex items-center justify-center gap-2 py-3 hover:bg-gray-900 transition"
-              onClick={handleAddToCart}
+              onClick={(e) => {
+                e.preventDefault(); // Prevent anchor navigation
+                e.stopPropagation(); // Stop event bubbling to anchor
+                handleAddToCart();
+              }}
               disabled={adding}
             >
               <ShoppingCart size={16} />

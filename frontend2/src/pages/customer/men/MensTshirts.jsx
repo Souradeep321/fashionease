@@ -1,21 +1,18 @@
-import React, { useEffect } from 'react';
 import Container from '../../../components/common/Container';
-import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../../components/common/Loader';
-import { getProductsForCustomer } from '../../../redux/productSlice';
+import CustomSwiper from '../../../components/common/Swiper';
 import ProductCard from '../../../components/ProductCard';
+import { useGetProductsQuery } from '../../../redux/productApi';
+
+import ment1 from '../../../assets/mens/ment1.png';
+import ment2 from '../../../assets/mens/ment2.png';
+import tshirt1 from '../../../assets/womenstshirts/tshirt1.png';
 
 const MensTshirts = () => {
-    const { products, status, error } = useSelector((state) => state.products);
-    const dispatch = useDispatch();
+    const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
+    console.log('products', products);
 
     const productList = products?.products || [];
-
-    useEffect(() => {
-        if (productList.length === 0) {
-            dispatch(getProductsForCustomer());
-        }
-    }, [dispatch, productList.length]);
 
 
     if (error || status === 'failed') {
@@ -26,6 +23,27 @@ const MensTshirts = () => {
 
     return (
         <Container className=' overflow-auto hide-scrollbar'>
+            <CustomSwiper
+                className="h-[60%] lg:h-[75%] md:mt-[117px] mt-[70px] overflow-auto hide-scrollbar"
+                slides={[
+                    {
+                        image: ment1,
+                        title: 'Urban Essentials',
+                        description: 'Stay cool and confident in everyday tees.',
+                    },
+                    {
+                        image: tshirt1,
+                        title: 'Casual Comfort',
+                        description: 'Soft, breathable fabrics built for your lifestyle.',
+                    },
+                    {
+                        image: ment2,
+                        title: 'Effortlessly Cool',
+                        description: 'Make a bold statement with minimal effort.',
+                    },
+                ]}
+            />
+
             {productList
                 .filter((product) => product.gender === 'men')
                 .filter((product) => product.category === 'T-shirts')

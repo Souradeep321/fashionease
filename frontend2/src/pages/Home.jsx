@@ -1,46 +1,44 @@
-import React from "react";
-import Slider from "../components/homepage/Slider";
 import Categories from "../components/homepage/Categories";
 import TrendingProducts from "../components/homepage/TrendingProduct";
 import PromoBanner from "../components/homepage/PromoBanner";
 import Newsletter from "../components/homepage/Newsletter";
-
-// new slider  elegent wala
-
-import img1 from "../components/Slider/a1.png";
-import img2 from "../components/Slider/a2.png";
-import img3 from "../components/Slider/a3.png";
+import CustomSwiper from "../components/common/Swiper";
 
 
-const slidesData = [
-  {
-    image: img1,
-    title: "Spring Break: How to Fashion Your Holiday",
-    subtitle: "Your boarding pass to good fashion.",
-  },
-  {
-    image: img2,
-    title: "Summer Escapes: Stylish Getaways",
-    subtitle: "Travel in trend this season.",
-  },
-  {
-    image: img3,
-    title: "City Vibes: Urban Fashion Tips",
-    subtitle: "Turn heads in the streets.",
-  },
-];
+import homeImg1 from "../assets/home/homeImg1.png";
+import homeImg2 from "../assets/home/homeImg2.png";
+import homeImg3 from "../assets/home/homeImg3.png";
 
 const Home = () => {
   return (
     <>
-      <div className="mt-[8%] ">
-        <Slider slides={slidesData} />
+      <div className=" h-screen overflow-auto hide-scrollbar">
+        <CustomSwiper
+          className="h-[60%] lg:h-[90%]  md:mt-[117px] mt-[70px]"
+          slides={[
+            {
+              image: homeImg1,
+              title: 'Stylish Elegance',
+              description: 'Discover the latest in women’s fashion.',
+            },
+            {
+              image: homeImg2,
+              title: 'Comfort Meets Class',
+              description: 'Explore outfits that define you.',
+            },
+            {
+              image: homeImg3,
+              title: 'Bold and Beautiful',
+              description: 'Style that speaks for itself.',
+            },
+          ]}
+        />
 
-  
-      <Categories />
-      <TrendingProducts />
-      <PromoBanner />
-      <Newsletter />
+
+        <Categories />
+        <TrendingProducts />
+        <PromoBanner />
+        <Newsletter />
       </div>
     </>
   );

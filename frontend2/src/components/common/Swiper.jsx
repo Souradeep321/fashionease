@@ -6,39 +6,51 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
+import { useNavigate } from 'react-router-dom';
 
 export default function CustomSwiper({ className, slides }) {
+    const navigate = useNavigate();
     return (
         <Swiper
-            className={`${className} rounded-sm`}
+            className={`${className} w-full h-screen`}
             modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
-            navigation
-            pagination={{ clickable: true }}
             autoplay={{
-                delay: 3000,
+                delay: 4000,
                 disableOnInteraction: false,
             }}
             loop={true}
+            pagination={{ clickable: true }}
         >
             {slides.map((slide, index) => (
-                <SwiperSlide
-                    key={index}
-                    style={{
-                        backgroundImage: `url(${slide.image})`,
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                    }}
-                    className="w-full"
-                >
-                    <div className="h-full w-full md:w-[50%] flex flex-col items-start justify-end gap-5 text-white text-center ">
-                        <div className='p-5 bg-white bg-opacity-[.5] text-black w-full flex flex-col items-start justify-center'>
-                            <h1 className="text-3xl">{slide.title}</h1>
-                            <p className="text-2xl">{slide.description}</p>
-                            {/* <button className="relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg shadow-purple-500/40 transition-all duration-500 ease-in-out transform hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/60 animate-pulse group overflow-hidden">
-                                <span className="absolute inset-0 w-full h-full transition-opacity duration-500 bg-gradient-to-r from-pink-500 to-yellow-500 opacity-0 group-hover:opacity-30 blur-sm"></span>
-                                <span className="relative z-10">✨ Fancy Button ✨</span>
-                            </button> */}
+                <SwiperSlide key={index}>
+                    <div className="flex flex-col md:flex-row h-screen w-full">
+                        {/* Left Section - Image */}
+                        <div
+                            className="w-full md:w-1/2 h-1/2 md:h-full bg-cover bg-center"
+                            style={{ backgroundImage: `url(${slide.image})` }}
+                        ></div>
+
+                        {/* Right Section - Text */}
+                        <div className="w-full md:w-1/2 h-1/2 md:h-full flex flex-col justify-center items-start px-10 bg-[#f5f5f5] text-black relative">
+
+                            <h2 className="text-4xl md:text-6xl font-serif uppercase leading-tight">
+                                {slide.title}
+                            </h2>
+                            <p className="mt-6 text-base md:text-lg max-w-md">{slide.description}</p>
+
+                            <div className="mt-8 flex gap-4">
+                                <button 
+                                onClick={() => navigate('/mens')}
+                                className="bg-black text-white px-4 py-2 text-sm hover:bg-white hover:text-black border border-black transition">
+                                    MENS
+                                </button>
+
+                                <button
+                                  onClick={() => navigate('/womens')}
+                                 className="bg-transparent text-black px-4 py-2 text-sm border border-black hover:bg-black hover:text-white transition">
+                                    WOMENS
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </SwiperSlide>
@@ -46,4 +58,3 @@ export default function CustomSwiper({ className, slides }) {
         </Swiper>
     );
 }
-
