@@ -10,6 +10,7 @@ import CustomSwiper from '../../../components/common/Swiper';
 import menstrousers1 from '../../../assets/mens/mentrousers1.png';
 import menstrousers2 from '../../../assets/mens/mentrousers2.png';
 import menstrousers3 from '../../../assets/mens/mentrousers3.png';
+import Footer from '../../../components/Footer';
 
 
 
@@ -61,6 +62,7 @@ const MensCasualTrousers = () => {
                 .map((product) => (
                     <ProductCard key={product.id} {...product} />
                 ))}
+                <Footer />
         </Container>
     );
 };

@@ -8,6 +8,7 @@ import CustomSwiper from "../components/common/Swiper";
 import homeImg1 from "../assets/home/homeImg1.png";
 import homeImg2 from "../assets/home/homeImg2.png";
 import homeImg3 from "../assets/home/homeImg3.png";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -39,6 +40,7 @@ const Home = () => {
         <TrendingProducts />
         <PromoBanner />
         <Newsletter />
+        <Footer />
       </div>
     </>
   );

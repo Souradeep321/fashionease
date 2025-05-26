@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
   Search, Filter, Edit, Trash2, MoreVertical,
 } from 'lucide-react';
 import { deleteProduct, getAllProducts } from '../../redux/productSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addSearchData } from '../../redux/productSlice';
 import { Link } from 'react-router-dom';
 import Loader from '../../components/common/Loader';
+import { useGetAdminProductsQuery } from '../../redux/productApi';
 
 
 const AdminProducts = () => {
@@ -37,13 +38,17 @@ const AdminProducts = () => {
     }
   ];
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // redux selector
-  const { products, status, error, searchData } = useSelector((state) => state.products);
+  // const { products, status, error } = useSelector((state) => state.products);
   const dispatch = useDispatch()
-  console.log('products', products)
+  // console.log('products', products)
+
+  const { data: products, error, isError, isLoading, status } = useGetAdminProductsQuery();
+  const productList = products?.products || [];
+
+  console.log('productList', productList)
+
 
   // Search Products
   const [searchProduct, setSearchProduct] = useState('');
@@ -67,10 +72,10 @@ const AdminProducts = () => {
 
 
   useEffect(() => {
-    if (products.length === 0) {
+    if (productList.length === 0) {
       dispatch(getAllProducts());
     }
-  }, [dispatch, products.length]);
+  }, [dispatch, productList.length]);
 
 
   const handleDelete = (id) => {
@@ -152,7 +157,7 @@ const AdminProducts = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 md:overflow-hidden mb-6
       h-[70vh] lg:overflow-y-scroll w-full">
         <div className="overflow-x-auto">
-           <table className="min-w-full  divide-y divide-gray-200">
+          <table className="min-w-full  divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
@@ -165,69 +170,68 @@ const AdminProducts = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
 
-              {products.products &&
-                products.products
-                  .filter((product) => {
-                    if (searchProduct.trim() === '') return true;
-                    const combined = `${product.title} ${product.category} `.toLowerCase();
-                    return combined.includes(searchProduct.toLowerCase());
-                  }).filter((product) => {
-                    if (categoryFilter === '') return true;
-                    return product.category.toLowerCase() === categoryFilter.toLowerCase();
-                  }).filter((product) => {
-                    if (genderFilter === '') return true;
-                    return product.gender === genderFilter.toLowerCase();
-                  }).map(product => (
-                    <tr key={product.id} className="hover:bg-gray-50 ">
-                      <td className="px-6 py-4 whitespace-nowrap ">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-lg">
-                            {/* add product image  */}
-                            <img src={product.image}
-                              alt="new product"
-                              className='w-full h-full object-cover rounded-lg'
-                            />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{product.title}</div>
-                          </div>
+              {productList
+                .filter((product) => {
+                  if (searchProduct.trim() === '') return true;
+                  const combined = `${product.title} ${product.category} `.toLowerCase();
+                  return combined.includes(searchProduct.toLowerCase());
+                }).filter((product) => {
+                  if (categoryFilter === '') return true;
+                  return product.category.toLowerCase() === categoryFilter.toLowerCase();
+                }).filter((product) => {
+                  if (genderFilter === '') return true;
+                  return product.gender === genderFilter.toLowerCase();
+                }).map(product => (
+                  <tr key={product.id} className="hover:bg-gray-50 ">
+                    <td className="px-6 py-4 whitespace-nowrap ">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-lg">
+                          {/* add product image  */}
+                          <img src={product.image}
+                            alt="new product"
+                            className='w-full h-full object-cover rounded-lg'
+                          />
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">{product.category}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{product.price}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {product.description.length > 20
-                          ? `${product.description.slice(0, 20)}...`
-                          : product.description}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.gender}</td>
-                     
-                     
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end space-x-2">
-                          {/* TODO: Edit Button */}
-                          <Link
-                            to={`/adminDashboard/update/${product.id}`}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            <Edit className="h-5 w-5" />
-                          </Link>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{product.title}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">{product.category}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{product.price}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product?.description.length > 20
+                        ? `${product.description.slice(0, 20)}...`
+                        : product.description}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.gender}</td>
 
-                          {/* TODO: Delete Button */}
-                          <button
-                            onClick={() => handleDelete(product.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                          <button className="text-gray-600 hover:text-gray-900">
-                            <MoreVertical className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                  )}
+
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        {/* TODO: Edit Button */}
+                        <Link
+                          to={`/adminDashboard/update/${product.id}`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          <Edit className="h-5 w-5" />
+                        </Link>
+
+                        {/* TODO: Delete Button */}
+                        <button
+                          onClick={() => handleDelete(product.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                        <button className="text-gray-600 hover:text-gray-900">
+                          <MoreVertical className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+                )}
             </tbody>
           </table>
         </div>

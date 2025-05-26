@@ -15,7 +15,7 @@ export default function CustomSwiper({ className, slides }) {
             className={`${className} w-full h-screen`}
             modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
             autoplay={{
-                delay: 4000,
+                delay: 2500,
                 disableOnInteraction: false,
             }}
             loop={true}

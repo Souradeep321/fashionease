@@ -29,7 +29,8 @@ import {
   AboutPage,
   SuccessPage,
   ShowProduct,
-  Loader
+  Loader,
+  Footer
 } from './components/common/index'
 import { useFetchCartItemsQuery } from './redux/cartApi';
 
@@ -106,6 +107,7 @@ function App() {
         <Route path='checkout' element={<CheckoutPage />} />
         <Route path='success' element={<SuccessPage />} />
       </Routes>
+    
       <Toaster />
 
     </>

@@ -24,6 +24,7 @@ import AboutPage from "../../pages/customer/AboutPage";
 import SuccessPage from "../../pages/customer/SuccessPage";
 import ShowProduct from "../ShowProduct";
 import Loader from "./Loader";
+import Footer from "../Footer";
 
 export {
     Home,
@@ -51,5 +52,6 @@ export {
     AboutPage,
     SuccessPage,
     ShowProduct,
-    Loader
+    Loader,
+    Footer
 }

@@ -74,8 +74,16 @@ const SuccessPage = () => {
         className='flex flex-col items-center justify-center border border-gray-300 rounded-md 
         p-10 bg-white shadow-md'
       >
-        <h1 className='text-4xl font-bold mb-4'>Congratulations</h1>
-        <p className='text-lg'>Your order has been placed successfully.</p>
+        <h1 className="text-4xl font-bold mb-4 text-gray-900">
+          Congratulations! <span role="img" aria-label="sparkles">✨</span>
+        </h1>
+        <p className="text-lg text-gray-700 mb-1">
+          Your order has been placed successfully.
+        </p>
+        <p className="text-sm text-gray-500">
+          Thank you for shopping with us!
+        </p>
+
       </motion.div>
 
       <motion.div

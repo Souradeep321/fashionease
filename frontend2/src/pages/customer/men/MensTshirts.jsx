@@ -7,6 +7,7 @@ import { useGetProductsQuery } from '../../../redux/productApi';
 import ment1 from '../../../assets/mens/ment1.png';
 import ment2 from '../../../assets/mens/ment2.png';
 import tshirt1 from '../../../assets/womenstshirts/tshirt1.png';
+import Footer from '../../../components/Footer';
 
 const MensTshirts = () => {
     const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
@@ -50,6 +51,7 @@ const MensTshirts = () => {
                 .map((product) => (
                     <ProductCard key={product.id} {...product} />
                 ))}
+                <Footer />
         </Container>
     );
 };

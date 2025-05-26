@@ -1,5 +1,6 @@
 import { FaTruck, FaShieldAlt, FaSmile } from 'react-icons/fa';
 import ment1 from "../../assets/mens/ment1.png"
+import Footer from '../../components/Footer';
 
 const AboutPage = () => {
 
@@ -152,6 +153,7 @@ const AboutPage = () => {
           </button>
         </div>
       </section> */}
+      <Footer />
     </div>
   );
 };

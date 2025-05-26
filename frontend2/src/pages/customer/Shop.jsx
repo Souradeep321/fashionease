@@ -7,6 +7,7 @@ import { useGetProductsQuery } from '../../redux/productApi';
 import homeImg1 from '../../assets/home/homeImg1.png';
 import homeImg2 from '../../assets/home/homeImg2.png';
 import homeImg3 from '../../assets/home/homeImg3.png';
+import Footer from '../../components/Footer';
 
 const Shop = () => {
   const { data: products, error, isError, isLoading, status } = useGetProductsQuery();
@@ -47,6 +48,7 @@ const Shop = () => {
       {productList.map((product) => (
         <ProductCard key={product.id} {...product} />
       ))}
+      <Footer />
     </Container>
   )
 }
