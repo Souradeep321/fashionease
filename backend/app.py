@@ -65,11 +65,13 @@ from routes.auth_routes import auth_bp
 from routes.product_routes import product_bp
 from routes.cart_routes import cart_bp
 from routes.order_routes import order_bp
+from routes.order_items import order_items_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(cart_bp)
 app.register_blueprint(order_bp)
+app.register_blueprint(order_items_bp)
     
 
 # Create DB tables

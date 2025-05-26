@@ -145,29 +145,33 @@ const Navbar = () => {
             </button>
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50">
-                <NavLink
-                  to="/signup"
-                  className="block px-4 py-2 hover:bg-rose-100"
-                  onClick={() => setShowUserMenu(false)}
-                >
-                  Sign Up
-                </NavLink>
-                <NavLink
-                  to="/login"
-                  className="block px-4 py-2 hover:bg-rose-100"
-                  onClick={() => setShowUserMenu(false)}
-                >
-                  Log In
-                </NavLink>
-                {isAuthenticated && (
-                  <div
-                    onClick={() => {
-                      handleLogout();
-                      setShowUserMenu(false);
-                    }}
-                    className="block px-4 py-2 hover:bg-rose-100">
-                    Logout
+                {!isAuthenticated && (
+                  <div>
+                    <NavLink
+                      to="/signup"
+                      className="block px-4 py-2 hover:bg-rose-100"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      Sign Up
+                    </NavLink>
+                    <NavLink
+                      to="/login"
+                      className="block px-4 py-2 hover:bg-rose-100"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      Log In
+                    </NavLink>
                   </div>
+                )}
+                {isAuthenticated && (
+                    <div
+                      onClick={() => {
+                        navigate('/profile');
+                        setShowUserMenu(false);
+                      }}
+                      className="block px-4 py-2 hover:bg-rose-100">
+                      profile
+                    </div>
                 )}
               </div>
             )}

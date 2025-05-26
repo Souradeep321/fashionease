@@ -16,7 +16,14 @@ const Shop = () => {
   const productList = products?.products || [];
 
   if (error || status === 'failed') {
-    return <p className='w-full text-2xl flex h-screen justify-center items-center'>Error: {error}</p>;
+    return (
+      <Container className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Error</h1>
+          <p className="text-lg text-red-600">{error?.data?.error || 'Failed to load products'}</p>
+        </div>
+      </Container>
+    );
   }
 
   if (status === 'loading') return <Loader />;

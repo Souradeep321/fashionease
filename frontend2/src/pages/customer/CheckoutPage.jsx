@@ -3,8 +3,12 @@ import { toast } from "react-hot-toast";
 import { useGetProfileQuery } from "../../redux/authApi";
 import { useFetchCartItemsQuery } from "../../redux/cartApi";
 import { useNavigate } from "react-router-dom";
+import { useAddOrderItemsMutation, useGetOrderItemsQuery } from "../../redux/orderApi";
 
 const CheckoutPage = () => {
+  const [addOrderItems] = useAddOrderItemsMutation();
+  // const [getOrderItems] = useGetOrderItemsQuery();
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     shippingName: "",
@@ -132,9 +136,18 @@ const CheckoutPage = () => {
             }
 
             if (validateData.status === "paid") {
-              await cartRefetch();
-              await navigate("/success");
-              toast.success("Payment successful! Thank you for your order.");
+              const orderId = validateData.orderId;
+              console.log('orderId', orderId)
+              try {
+                await addOrderItems(orderId).unwrap();
+                console.log("Order items added successfully");
+                await cartRefetch();
+                navigate("/success");
+                toast.success("Payment successful! Thank you for your order.");
+              } catch (error) {
+                toast.error("Failed to add order items. Please try again.");
+                toast.error("paymentError", error.message); 
+              }
             }
           } catch (err) {
             setPaymentError(err.message || "Payment validation failed");

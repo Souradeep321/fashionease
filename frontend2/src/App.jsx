@@ -29,10 +29,10 @@ import {
   AboutPage,
   SuccessPage,
   ShowProduct,
-  Loader,
-  Footer
+  UserProfile
 } from './components/common/index'
 import { useFetchCartItemsQuery } from './redux/cartApi';
+import CheckOrderDetail from './pages/customer/CheckoutOrderDetail';
 
 function App() {
   const { data: userData, refetch, isLoading } = useGetProfileQuery();
@@ -93,6 +93,8 @@ function App() {
         <Route path='search' element={<SearchPage />} />
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
+        <Route path='profile' element={<UserProfile />} />
+        <Route path='check-orders' element={<CheckOrderDetail />} />
 
         {/* TODO: in admindashboard no need of the nav component */}
         <Route path='adminDashboard' element={user && user?.role === 'admin' ? <AdminDashboard /> : <Login />}>

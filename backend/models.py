@@ -86,6 +86,7 @@ class CartItem(db.Model):
             'product': self.product.to_dict() if self.product else None
         }
 
+
 class OrderStatus(enum.Enum):
     PENDING = "pending"
     PAID = "paid"
@@ -131,7 +132,35 @@ class Order(db.Model):
             'city': self.city,
             'state': self.state,
             'postalCode': self.postal_code,
-            'country': self.country
+            'country': self.country,
+        }
+
+
+class OrderItem(db.Model):
+    __tablename__ = 'order_items'
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)  # Store price at the time of order
+    title = db.Column(db.String(120), nullable=False)  # Optional snapshot
+    image = db.Column(db.String(256), nullable=False)  # Optional snapshot
+
+    order = db.relationship('Order', backref=db.backref('order_items', cascade='all, delete-orphan'))
+    product = db.relationship('Product')
+
+    def __repr__(self):
+        return f'<OrderItem order_id={self.order_id} product_id={self.product_id} qty={self.quantity}>'
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'orderId': self.order_id,
+            'productId': self.product_id,
+            'quantity': self.quantity,
+            'price': self.price,
+            'title': self.title,
+            'image': self.image,
         }
 
 

@@ -1,15 +1,14 @@
 from flask import Blueprint, request, jsonify 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from db import db
-from models import Order,User
+from models import Order,User,CartItem
 from app import razorpay_client
 from models import OrderStatus
 import os
 import razorpay
 import hmac
 import hashlib
-
-
+from decorators.roles import admin_required
 
 
 order_bp = Blueprint('order', __name__)
@@ -131,3 +130,76 @@ def validate_order():
     except Exception as e:
         print(f"Validation error: {str(e)}")
         return jsonify({"error": "Payment validation failed"}), 500
+
+
+#  get order details by user id
+@order_bp.route('/api/v1/orders', methods=['GET'])
+@jwt_required()
+def get_orders():
+    try:
+        user_id = get_jwt_identity()
+        orders = Order.query.filter_by(user_id=user_id).all()
+
+        if not orders:
+            return jsonify({"message": "No orders found"}), 404
+
+        return jsonify([order.to_dict() for order in orders]), 200
+    except Exception as e:
+        print(f"Error fetching orders: {str(e)}")
+        return jsonify({"error": "Failed to fetch orders"}), 500
+
+
+@order_bp.route('/api/v1/orders/latest', methods=['GET'])
+@jwt_required()
+def get_latest_order():
+    try:
+        user_id = get_jwt_identity()
+        latest_order = Order.query.filter_by(user_id=user_id).order_by(Order.created_at.desc()).first()
+
+        if not latest_order:
+            return jsonify({"message": "No order found"}), 404
+
+        return jsonify(latest_order.to_dict()), 200
+    except Exception as e:
+        print(f"Error fetching latest order: {str(e)}")
+        return jsonify({"error": "Failed to fetch latest order"}), 500
+
+
+# admin delete order-item by id
+@order_bp.route('/api/v1/orders/<int:order_id>', methods=['DELETE'])
+@jwt_required()
+@admin_required
+def delete_order(order_id):
+    try:
+        order = Order.query.get(order_id)
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+
+        db.session.delete(order)
+        db.session.commit()
+
+        return jsonify({"message": "Order deleted successfully"}), 200
+    except Exception as e:
+        print(f"Error deleting order: {str(e)}")
+        db.session.rollback()
+        return jsonify({"error": "Failed to delete order"}), 500
+
+#admin delete all orders
+@order_bp.route('/api/v1/orders', methods=['DELETE'])
+@jwt_required()
+@admin_required
+def delete_all_orders():
+    try:
+        orders = Order.query.all()
+        if not orders:
+            return jsonify({"message": "No orders found"}), 404
+
+        for order in orders:
+            db.session.delete(order)
+        db.session.commit()
+
+        return jsonify({"message": "All orders deleted successfully"}), 200
+    except Exception as e:
+        print(f"Error deleting all orders: {str(e)}")
+        db.session.rollback()
+        return jsonify({"error": "Failed to delete all orders"}), 500
