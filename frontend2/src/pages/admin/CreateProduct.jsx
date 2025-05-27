@@ -2,12 +2,15 @@ import React, { use, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, getAllProducts } from '../../redux/productSlice';
 import { useNavigate } from 'react-router-dom';
+import { useGetProfileQuery } from '../../redux/authApi';
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { status, error } = useSelector((state) => state.products);
-  const {user} = useSelector((state) => state.auth);
+  const { data: user } = useGetProfileQuery();
+  
   const [previewImage, setPreviewImage] = useState(null);
 
   const [formData, setFormData] = useState({
