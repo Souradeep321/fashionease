@@ -12,7 +12,7 @@ export default function CustomSwiper({ className, slides }) {
     const navigate = useNavigate();
     return (
         <Swiper
-            className={`${className} w-full h-screen`}
+            className={`${className} max-w-[1280px] h-screen`}
             modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
             autoplay={{
                 delay: 2500,

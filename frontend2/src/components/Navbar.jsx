@@ -118,8 +118,6 @@ const Navbar = () => {
     <header
       className="w-full fixed z-50 bg-white text-black shadow-sm"
     >
-
-
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
         {/* Hamburger */}
         <button
@@ -164,14 +162,14 @@ const Navbar = () => {
                   </div>
                 )}
                 {isAuthenticated && (
-                    <div
-                      onClick={() => {
-                        navigate('/profile');
-                        setShowUserMenu(false);
-                      }}
-                      className="block px-4 py-2 hover:bg-rose-100">
-                      profile
-                    </div>
+                  <div
+                    onClick={() => {
+                      navigate('/profile');
+                      setShowUserMenu(false);
+                    }}
+                    className="block px-4 py-2 hover:bg-rose-100">
+                    profile
+                  </div>
                 )}
               </div>
             )}
