@@ -7,6 +7,12 @@ const CheckOrderDetail = () => {
   const { data: user, isLoading: isLoadingUser, isError: isErrorUser } = useGetProfileQuery();
   const { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders } = useGetOrderDetailsQuery();
   const { data: orderItems, isLoading: isLoadingItems, isError: isErrorItems } = useGetAllOrderItemsQuery();
+  console.log('orders', orders)
+  console.log('orderItems', orderItems)
+  const orderConfirm = !!orders
+  console.log('orderConfirm', orderConfirm)
+
+
 
 
   const userOrders = orders?.filter(order => order.userId === user.id);
@@ -22,20 +28,22 @@ const CheckOrderDetail = () => {
           <br className="hidden lg:block" /> You’ve made a great choice
         </h1>
 
-        <p className="text-base text-gray-700 mb-4">
-          Confirmation email has been sent to your email with order and shipping details.
-        </p>
-
-        <div className="text-sm text-gray-700 mb-10 space-y-4 leading-relaxed">
-          <p>Hello,</p>
-          <p>
-            Your order has been successfully completed and will be delivered to you in the near future.
-            You can track the delivery status in your account. You will also receive a notification with a
-            link to track the parcel from our partner courier.
-          </p>
-          <p>— Fashionease</p>
-        </div>
-
+        {orderConfirm ? (
+          <div>
+            <p className="text-base text-gray-700 mb-4">
+              Confirmation email has been sent to your email with order and shipping details.
+            </p>
+            <div className="text-sm text-gray-700 mb-10 space-y-4 leading-relaxed">
+              <p>Hello,</p>
+              <p>
+                Your order has been successfully completed and will be delivered to you in the near future.
+                You can track the delivery status in your account. You will also receive a notification with a
+                link to track the parcel from our partner courier.
+              </p>
+              <p>— Fashionease</p>
+            </div>
+          </div>
+        ) : null}
         <button
           onClick={() => navigate('/shop')}
           className="px-6 py-2 border border-black text-black rounded hover:bg-black hover:text-white transition">

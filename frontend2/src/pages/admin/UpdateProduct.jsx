@@ -74,7 +74,7 @@ export default function UpdateProduct() {
     if (status === 'loading' && !singleProduct) {
         return <div className="text-center p-8">Loading product details...</div>;
     }
-    
+
     return (
         <div className="w-[100%] mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-bold mb-6 text-purple-700 w-max mx-auto">Update Product</h2>
@@ -174,6 +174,7 @@ export default function UpdateProduct() {
                             <option value="">Select Category</option>
                             <option value="clothing">Clothing</option>
                             <option value="shoes">Shoes</option>
+                            <option value="T-shirts">T-shirts</option>
                             <option value="accessories">Accessories</option>
                             <option value="Shirts">Shirts</option>
                             <option value="Saree">Saree</option>

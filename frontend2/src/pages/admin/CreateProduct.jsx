@@ -10,7 +10,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const { status, error } = useSelector((state) => state.products);
   const { data: user } = useGetProfileQuery();
-  
+
   const [previewImage, setPreviewImage] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -60,10 +60,6 @@ export default function Dashboard() {
       image: null,
     });
     setPreviewImage(null);
-    if (status === 'succeeded') {
-      navigate("/adminDashboard/products");
-    }
-
   };
 
   return (
